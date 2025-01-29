@@ -1,29 +1,37 @@
 package com.example.messaging.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Message {
     @JsonProperty("msg_offset")
-    private final long msgOffset;
+    private  long msgOffset;
 
     @JsonProperty("type")
-    private final String type;
+    private  String type;
 
     @JsonProperty("created_utc")
-    private final Instant createdUtc;
+    private  Instant createdUtc;
 
     @JsonProperty("data")
-    private final byte[] data;
+    private  byte[] data;
 
     @JsonProperty("state")
-    private final MessageState state;
+    private  MessageState state;
 
     @JsonProperty("retry_count")
-    private final int retryCount;
+    private  int retryCount;
 
     @JsonProperty("last_retry_utc")
-    private final Instant lastRetryUtc;
+    private  Instant lastRetryUtc;
+
+    @JsonProperty("msg_key")
+    private  String msgKey;
+
+    public Message() {
+    }
 
     private Message(Builder builder) {
         this.msgOffset = builder.msgOffset;
@@ -33,9 +41,12 @@ public class Message {
         this.state = builder.state;
         this.retryCount = builder.retryCount;
         this.lastRetryUtc = builder.lastRetryUtc;
+        this.msgKey=builder.msgKey;
     }
 
     // Getters
+
+    public String getMsgKey() { return msgKey; }
     public long getMsgOffset() { return msgOffset; }
     public String getType() { return type; }
     public Instant getCreatedUtc() { return createdUtc; }
@@ -63,6 +74,7 @@ public class Message {
         private MessageState state = MessageState.PENDING;
         private int retryCount = 0;
         private Instant lastRetryUtc;
+        private String msgKey;
 
         public Builder msgOffset(long msgOffset) {
             this.msgOffset = msgOffset;
@@ -99,6 +111,11 @@ public class Message {
             return this;
         }
 
+        public Builder msgKey(String msgKey) {
+            this.msgKey = msgKey;
+            return this;
+        }
+
         public Message build() {
             if (createdUtc == null) {
                 createdUtc = Instant.now();
@@ -107,6 +124,17 @@ public class Message {
         }
     }
 
+    public static Builder from(Message existingMessage) {
+        return new Builder()
+                .msgOffset(existingMessage.getMsgOffset())
+                .type(existingMessage.getType())
+                .createdUtc(existingMessage.getCreatedUtc())
+                .data(existingMessage.getData())
+                .state(existingMessage.getState())
+                .retryCount(existingMessage.getRetryCount())
+                .lastRetryUtc(existingMessage.getLastRetryUtc())
+                .msgKey(existingMessage.getMsgKey());
+    }
     public static Builder builder() {
         return new Builder();
     }

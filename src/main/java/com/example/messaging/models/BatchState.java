@@ -3,7 +3,8 @@ package com.example.messaging.models;
 public enum BatchState {
     PARTIAL("PARTIAL"),             // Some messages in batch acknowledged
     COMPLETE("COMPLETE"),           // All messages successfully acknowledged
-    PARTIAL_FAILED("PARTIAL_FAILED"); // Some messages failed, might need retry
+    PARTIAL_FAILED("PARTIAL_FAILED"),
+    PENDING("Pending"); // Some messages failed, might need retry
 
     private final String value;
 
